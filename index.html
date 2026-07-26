@@ -173,6 +173,7 @@
     <a href="#why" class="hideS">Motivation</a>
     <a href="#model" class="hideS">The model</a>
     <a href="#results" class="hideS">Results</a>
+    <a href="whitepaper.html" class="hideS">Whitepaper</a>
     <a href="#app">Try it ↓</a>
   </div>
 </div></nav>
@@ -187,7 +188,7 @@
     <a class="btn primary" href="#app">▶ Launch the interactive model</a>
     <a class="btn soft" href="#why">Read the idea first</a>
   </div>
-  <div class="byline">An interactive realisation of Guénin-Carlut &amp; Benazouz (2024) · runs entirely in your browser</div>
+  <div class="byline">An interactive realisation of Guénin-Carlut &amp; Benazouz (2024), implemented by Claude (Anthropic) · runs entirely in your browser</div>
 </div></header>
 
 <!-- ============ MOTIVATION ============ -->
@@ -392,8 +393,13 @@
 </div></section>
 
 <footer class="site"><div class="wrap">
-  <div>Built from the OSF preprint <a href="https://osf.io/rfsv7/" target="_blank" rel="noopener">osf.io/rfsv7</a> ·
-       Guénin-Carlut &amp; Benazouz (2024).</div>
+  <div style="max-width:640px">
+    <b style="color:var(--ink)">Reference.</b> Guénin-Carlut, A., &amp; Benazouz, S. (2024). <i>Modelling the social
+    construction of preferences in financial economics — Toward an Active Inference reconstruction of Minskyian
+    macroeconomics.</i> OSF. <a href="https://osf.io/rfsv7/" target="_blank" rel="noopener">https://osf.io/rfsv7/</a><br>
+    Model, interface and <a href="whitepaper.html">technical whitepaper</a> implemented by Claude (Anthropic).
+    A research and teaching model; not investment advice.
+  </div>
   <div style="margin-left:auto">A cognitive reconstruction of Minskyian macroeconomics.</div>
 </div></footer>
 
@@ -663,10 +669,8 @@ const GROUPS=[
     hint:'Arbitrage pull that lifts an under-valued domain (ends busts).'},
  ]},
  {name:'Agent cognition', color:gv('--sage'), open:true, params:[
-   {key:'precision', label:'Decision precision', min:1, max:12, step:0.5, fmt:v=>v.toFixed(1),
-    hint:'Sharpness of policy selection (softmax on −Expected Free Energy).'},
    {key:'allocPrecision', label:'Focus of capital', min:1, max:6, step:0.2, fmt:v=>v.toFixed(1),
-    hint:'How hard agents concentrate capital into the best-believed domain.'},
+    hint:'Softmax precision of the capital-allocation policy: how hard agents concentrate on the best-believed domain.'},
    {key:'greed', label:'Appetite for gains', min:0, max:3, step:0.1, fmt:v=>v.toFixed(1),
     hint:'Preference weight on the Gain outcome.'},
    {key:'debtAversion', label:'Preference against debt', min:0, max:1.2, step:0.02, fmt:v=>v.toFixed(2),
