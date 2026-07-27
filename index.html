@@ -96,9 +96,11 @@
   .tbtn.primary{background:linear-gradient(180deg,#c9794f,#b5623c); color:#fff6ee; border-color:#b5623c}
   .tbtn.primary:hover{filter:brightness(1.05); color:#fff6ee}
   .appbody{display:grid; grid-template-columns:290px 1fr}
-  @media(max-width:900px){ .appbody{grid-template-columns:1fr} }
+  @media(max-width:900px){ .appbody{display:flex; flex-direction:column} .appbody .content{order:1} .appbody .side{order:2} }
   .side{border-right:1px solid var(--border); background:var(--bg2); padding:14px; max-height:1400px; overflow-y:auto}
-  @media(max-width:900px){ .side{border-right:none; border-bottom:1px solid var(--border); max-height:none} }
+  @media(max-width:900px){ .side{border-right:none; border-top:1px solid var(--border); max-height:none} }
+  .sidehdr{display:none}
+  @media(max-width:900px){ .sidehdr{display:block; font-weight:680; font-size:13px; color:var(--ink); margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border)} }
   .presets{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px}
   .pset{font-size:11.5px; padding:6px 10px; border-radius:8px; background:var(--panel); border:1px solid var(--border); color:var(--ink); cursor:pointer; transition:.15s}
   .pset:hover{border-color:var(--terra); color:var(--terra)}
@@ -325,11 +327,12 @@
     </div>
     <div class="appbody">
       <aside class="side">
+        <div class="sidehdr">Controls &amp; presets — tap a group to open</div>
         <div class="presets" id="presets"></div>
         <div id="controls"></div>
         <div class="ct">
-          <div class="r"><label>Simulation speed</label><span class="v" id="v_speed">4×</span></div>
-          <input type="range" id="speed" min="1" max="24" step="1" value="4">
+          <div class="r"><label>Simulation speed</label><span class="v" id="v_speed">2×</span></div>
+          <input type="range" id="speed" min="1" max="24" step="1" value="2">
         </div>
         <div class="seedrow">
           <label style="font-size:12px">Seed</label>
@@ -386,7 +389,7 @@
       </div>
     </div>
     <div class="foot">
-      <span>Every agent is a discrete Active-Inference agent — this is genuine cognition, not a curve fit.</span>
+      <span>Every agent is a discrete Active-Inference agent (a POMDP): belief updating and preference-weighted action, not a fitted curve.</span>
       <span>Not investment advice.</span>
     </div>
   </div>
@@ -701,7 +704,7 @@ const PRESETS={
 };
 
 /* ---------------- state ---------------- */
-let cfg={}, sim=null, running=false, stepsPerFrame=4;
+let cfg={}, sim=null, running=false, stepsPerFrame=2;
 const WINDOW=460;
 const DEFAULTS=Object.assign({}, M.createModel({}).cfg);
 
@@ -738,6 +741,10 @@ function buildControls(){
   });
   gd.appendChild(gb); host.appendChild(gd);
  });
+ // on small screens the charts come first; keep the control groups collapsed so the
+ // panel is a compact, tappable list rather than a long wall of sliders.
+ if(window.matchMedia && window.matchMedia('(max-width:900px)').matches)
+   document.querySelectorAll('#controls .grp').forEach(g=>g.classList.add('col'));
 }
 function pct(inp,p){ inp.style.setProperty('--pct',((inp.value-p.min)/(p.max-p.min)*100)+'%'); }
 function syncControls(){ GROUPS.forEach(g=>g.params.forEach(p=>{ const inp=document.getElementById('i_'+p.key); if(!inp)return;

@@ -65,6 +65,15 @@
   .note b{color:var(--ink)}
   .callout{border-left:3px solid var(--sage);background:#f2f2e4;border-radius:0 8px 8px 0;padding:10px 16px;margin:14px 0;font-size:14.5px}
   hr.soft{border:none;border-top:1px solid var(--rule);margin:34px 0}
+  @media(max-width:640px){
+    body{font-size:15.5px}
+    .page{padding:0 16px 60px}
+    header.doc h1{font-size:27px}
+    .toc ol{columns:1}
+    table{display:block;overflow-x:auto;white-space:nowrap;font-size:12px}
+    th,td{padding:5px 8px}
+    .eq{font-size:12px}
+  }
   /* footer */
   footer.doc{margin-top:50px;padding-top:22px;border-top:2px solid var(--border2);
     font-family:ui-sans-serif,system-ui,sans-serif;font-size:13px;color:var(--muted);line-height:1.7}
@@ -100,7 +109,7 @@
   <b>Contents</b>
   <ol>
     <li><a href="#s1">Abstract &amp; scope</a></li>
-    <li><a href="#s2">Motivation</a></li>
+    <li><a href="#s2">Theoretical motivation</a></li>
     <li><a href="#s3">Relation to the source paper</a></li>
     <li><a href="#s4">Generative model</a></li>
     <li><a href="#s5">Perception &amp; the preference against debt</a></li>
@@ -109,9 +118,10 @@
     <li><a href="#s8">Multi-domain dynamics</a></li>
     <li><a href="#s9">Parameters</a></li>
     <li><a href="#s10">Experimental conditions &amp; results</a></li>
-    <li><a href="#s11">Limitations &amp; scope of claims</a></li>
-    <li><a href="#s12">Reproducibility</a></li>
-    <li><a href="#s13">References</a></li>
+    <li><a href="#s11">What the model establishes</a></li>
+    <li><a href="#s12">Limitations &amp; scope of claims</a></li>
+    <li><a href="#s13">Reproducibility</a></li>
+    <li><a href="#s14">References</a></li>
   </ol>
 </div>
 
@@ -129,25 +139,62 @@ a second, emergent phenomenon: <span class="term">excess capital displaces</span
 beliefs shift, and this rotation measurably damps the amplitude of any single bubble.</p>
 <p>This is a <b>stylized, mechanistic model</b>, not a calibrated or predictive one. All quantitative results below
 are properties of the specified equations at the stated parameters and random seeds; none is an empirical claim
-about real markets. Section 11 states precisely what is and is not asserted.</p>
+about real markets. Section 12 states precisely what is and is not asserted.</p>
 
-<h2 id="s2"><span class="n">2</span>Motivation</h2>
-<p>Standard microeconomic theory models markets game-theoretically: agents with <em>fixed</em> preferences optimise
-against one another within a <em>fixed</em> system of conventions (von Neumann &amp; Morgenstern, 1944). This is
-analytically powerful but takes as primitive several quantities that a financial crisis is precisely about — what
-agents want, how much risk they will bear, and how confident they are. Those quantities are not stable across a
-credit cycle.</p>
-<p>Minsky (1982) placed their instability at the centre of his account: a prolonged calm leads market participants
-to revise downward their perceived risk, adopt more speculative financing, and thereby render the system fragile —
-"stability is destabilising." Minsky resisted formalisation, and subsequent modelling efforts have not converged on
-a canonical translation (Nikolaidi &amp; Stockhammer, 2018).</p>
-<p>Active Inference (Friston et al., 2010; Parr, Pezzulo &amp; Friston, 2022) offers a different primitive for the
-agent. A cognitive system is modelled as minimising a variational bound on surprise: it maintains beliefs about
-hidden causes of its sensations and selects actions expected to make its preferred observations more likely.
-Preferences are encoded as prior expectations over outcomes, and can be made <em>adaptive</em>. Placing such agents
-in a market makes preferences <em>constructed</em> — by each agent's experience and, through observation of others,
-socially. The question this model operationalises is narrow and testable within the model: <b>if the preference
-against debt is made a function of an agent's inferred belief in appreciation, do Minsky-type dynamics follow?</b></p>
+<h2 id="s2"><span class="n">2</span>Theoretical motivation</h2>
+
+<h3>2.1 The closure problem in economic theory</h3>
+<p>Game theory, since von Neumann &amp; Morgenstern (1944), is the standard apparatus for microeconomics because it
+characterises the equilibria and dynamics of many agents interacting under complex conventions. Its analytical power,
+however, rests on taking two things as <em>given</em>: the system of conventions the agents inhabit, and the
+preferences they hold within it. Both are exactly what an evolving economy — and, acutely, a financial crisis —
+tends to remake. The point is not that agents are irrational but that the model is <em>closed</em> at the wrong
+place: the objects a theory of instability most needs to explain (what agents want, how much risk they will bear,
+how confident they feel) are entered as fixed parameters. Critics from several traditions have pressed this — that
+economic modelling brackets the creative evolution of the very preferences and conventions it studies (Chavalarias,
+2009; Felin, Kauffman, Koppl &amp; Longo, 2014) — but no standard method endogenises them, because doing so forfeits
+the tidy input–output laws that make a model tractable. The result is a structural blind spot precisely where
+financial fragility lives.</p>
+
+<h3>2.2 Minsky's Financial Instability Hypothesis</h3>
+<p>Hyman Minsky, trained in the evolutionary tradition under Schumpeter, placed the endogeneity of fragility at the
+centre of his account of capitalist finance (Minsky, 1982). His <span class="term">Financial Instability Hypothesis</span>
+(FIH) holds that a prolonged tranquil expansion is <em>self-undermining</em>: as memories of loss fade and asset
+values validate past optimism, participants revise their perceived risk downward, accept thinner margins of safety,
+and shift the composition of financing. Minsky named three postures on a ladder of fragility — <b>hedge</b> units,
+whose income covers principal and interest; <b>speculative</b> units, whose income covers only interest and which
+must therefore roll over debt; and <b>Ponzi</b> units, whose income covers neither and which remain solvent only
+while asset prices continue to rise. As an expansion matures the population drifts up this ladder, so the system
+becomes progressively more exposed to any interruption of the upward trend — "stability is destabilising." The 2008
+crisis renewed the hypothesis's prominence, yet Minsky's own methodological hostility to game-theoretic formalism
+left it mathematically underdetermined, and later modellers have not converged on a canonical translation (Nikolaidi,
+2017; Nikolaidi &amp; Stockhammer, 2018). The FIH is thus a phenomenon in search of a foundation: a qualitative
+account of endogenous instability without an agreed micro-mechanism generating it.</p>
+
+<h3>2.3 Active Inference and the endogeneity of preference</h3>
+<p>Active Inference (Friston et al., 2010; Parr, Pezzulo &amp; Friston, 2022), the process-theoretic reading of the
+Free Energy Principle, supplies a candidate foundation because of <em>how</em> it represents an agent. A cognitive
+system is modelled as minimising a variational bound on the surprise of its sensory and active states: it maintains
+posterior beliefs about the hidden causes of its sensations and selects actions expected to yield its preferred
+observations. Three features of this construction matter here. First, <b>perception and action are unified</b> under
+one imperative, so an agent both infers the market and acts so as to confirm its inferences — the "self-evidencing"
+character of active inference (Hohwy, 2016), which supplies a natural micro-account of the self-fulfilling dynamics
+central to bubbles. Second, <b>preferences are priors</b>: they are encoded as prior expectations over outcomes
+rather than as a separate utility functional, so preferences and beliefs live in the same representational currency
+and either can be made to depend on the other. (Under information-theoretic bounds on rationality the objective of
+such an agent coincides, in the fully-observed case, with that of an expected-utility maximiser, so this is a
+generalisation of, not a departure from, the standard decision-theoretic core.) Third, because preferences are
+representational states, they can be made <b>adaptive and socially coupled</b> — updated by an agent's own experience
+and pulled toward the beliefs of others. This is what lets "the social construction of preferences" be stated as a
+mechanism rather than a slogan: if the preference against debt is a function of a belief, and beliefs spread
+through a population, then preferences are literally built by experience and by the crowd.</p>
+
+<h3>2.4 The modelling question</h3>
+<p>These strands motivate a single, sharply-posed question, testable within a model: <b>if an agent's preference
+against debt is made a function of its own inferred belief in continued appreciation — and nothing else is assumed
+irrational or exogenously shocked — do Minsky-type dynamics follow?</b> Answering it requires committing to
+specific mechanics the source abstract leaves open; the remainder of this document specifies those commitments
+(§§3–9) and reports what the resulting system does (§10) and what that establishes (§11).</p>
 
 <h2 id="s3"><span class="n">3</span>Relation to the source paper</h2>
 <p>The source abstract specifies (i) a framework — Active Inference; (ii) a target — the FIH; (iii) two ingredients:
@@ -217,7 +264,7 @@ matrix, multiplied by the two observation likelihoods, then normalised:</p>
 <div class="eq">belief<sub>k</sub> ← normalize( (B · belief<sub>k</sub>) ⊙ A<sup>P</sup>[·, o<sup>P</sup><sub>k</sub>] ⊙ A<sup>W</sup>[Flat, ·, o<sup>W</sup>] )   <span class="c"># ⊙ = elementwise</span></div>
 <p>The wealth likelihood is evaluated at the <code>Flat</code> row: per-domain regime inference uses the domain's own
 price move plus the agent's overall wealth outcome as evidence. (Using the global wealth outcome for every domain is
-a simplification; §11.)</p>
+a simplification; §12.)</p>
 
 <h3>5.2 Belief in appreciation</h3>
 <p>The scalar read off each posterior is the belief the domain will appreciate — the quantity a Minsky "Ponzi" unit
@@ -324,7 +371,7 @@ perception bias) determines its wealth observation via thresholds <code>gainThre
 <h3>7.4 Insolvency</h3>
 <p>If equity turns negative the agent is liquidated and re-enters as a fresh, maximally cautious participant
 (<code>scar = 1</code>, pessimistic beliefs, cash restored to the initial endowment). Population is thus held fixed;
-wealth is not conserved (§11).</p>
+wealth is not conserved (§12).</p>
 
 <h3>7.5 Minsky financing classes</h3>
 <p>Each indebted agent is classified from income against debt service, with
@@ -449,7 +496,69 @@ agents 15–400, domains 1–6, interest 0–5%/step, leverage 0.2–4×, alloca
 mean-reversion 0, noise up to 0.03, price impact up to 0.15. Throughput is ≈5,400 steps/s at K = 3, N = 120 in a single
 browser thread, so the model runs in real time.</p>
 
-<h2 id="s11"><span class="n">11</span>Limitations &amp; scope of claims</h2>
+<h2 id="s11"><span class="n">11</span>What the model establishes</h2>
+<p>The results of §10 are properties of a specific simulation. Their interest is conceptual, and it is worth stating
+precisely — and modestly — what building and running the model does and does not show.</p>
+
+<h3>11.1 A how-possibly demonstration: Minsky without irrationality or shocks</h3>
+<p>The model is, in the philosophy-of-science sense, a <span class="term">how-possibly</span> explanation: it exhibits
+a mechanism <em>sufficient</em> to produce the target phenomenon, without claiming that mechanism is the one operating
+in real markets. What it establishes is an existence result. Minsky-type dynamics — accumulating leverage in calm,
+a drift up the hedge → speculative → Ponzi ladder, and cyclical fragility — arise here from agents that are
+<b>Bayesian and boundedly rational</b>, with <b>no exogenous shock</b>, <b>no irrationality</b>, and <b>no
+behavioural rule imposed by hand</b>. The only substantive assumption is that the preference against debt is a
+function of an inferred belief. This matters because a common objection to the FIH is that it must smuggle in
+either myopia or an outside trigger; the model shows that neither is necessary. Endogenous instability follows from
+the coupling of belief-driven leverage to a self-evidencing market. (It also shows the converse in the
+single-domain limit: with the coupling but <em>without</em> a bounding structure the dynamics do not merely cycle —
+they diverge, §10.6, so the FIH's "recurring cycle" is a property of the whole system, not of the belief loop alone.)</p>
+
+<h3>11.2 Preferences as beliefs: a representational unification</h3>
+<p>Operationalising the preference against debt as <code>1 − (belief in appreciation)</code> collapses two
+descriptions that are usually separate. In standard treatments a Ponzi borrower is defined <em>financially</em> — by
+a cash-flow relation (income below interest, solvent only on capital gains). Here that same agent is defined
+<em>cognitively</em> — it is one whose posterior places high mass on the appreciating regime and whose caution has
+accordingly relaxed. The financial category and the cognitive state are the same object viewed from two sides. This
+is the concrete cash-value of "preferences are priors" (§2.3): it lets the "social construction of preferences" be a
+mechanism (belief contagion changes the caution that sets leverage), and it makes the model's central quantity —
+belief in appreciation — both the thing agents infer and the thing that drives the aggregate. The measured lead of
+belief over leverage (§10.2) is the signature of that direction of causation within the model.</p>
+
+<h3>11.3 The necessity — and multiplicity — of a bounding structure</h3>
+<p>The source abstract asks whether "additional structure (such as … emotional dynamics)" is <em>necessary</em>. The
+model returns a sharper, two-part answer. <b>Some</b> bounding structure is necessary: an unbounded belief–leverage
+loop is explosively unstable (§10.6, single-domain). But the <em>identity</em> of the binding structure is not
+unique. This implementation supplies three candidates — a lopsided fundamentalist arbitrage, a convex price ceiling,
+and, with several markets, capital rotation — and finds that an emotional loss-memory is decisive only in the
+single-domain case, being largely redundant once the others are present. The theoretical upshot is that Minsky's
+"emotional" story and a purely structural (arbitrage/liquidity) story are <b>not rival explanations of boundedness
+but substitutable ones</b>; the FIH does not privilege a psychological brake. This is a genuine, if negative,
+contribution to the modelling debate the abstract situates itself in.</p>
+
+<h3>11.4 Capital displacement: an emergent prediction beyond the original programme</h3>
+<p>Extending the framework from one market to several yields a phenomenon not contained in the single-asset
+conjecture: excess capital does not simply inflate and deflate a bubble in place, it <b>migrates</b> between domains
+as relative beliefs shift (§10.3), and this migration is not neutral — it <b>damps</b> the peak amplitude of any one
+bubble (§10.4), because a souring domain can always shed pressure into a fresher one. This is an emergent,
+qualitative prediction of the cognitive framing: it says that in a world of many competing "stories" for capital,
+systemic fragility may express itself less as a single towering bubble than as a restless rotation of moderate ones —
+a different empirical fingerprint from the classic single-asset FIH. Whether real capital rotation exhibits this
+damping is an empirical question the model raises but does not settle; its contribution is to make the prediction
+precise and mechanistically grounded.</p>
+
+<h3>11.5 Methodological contribution and epistemic status</h3>
+<p>Methodologically, the model is a worked instance of <b>cognitively-grounded macro-finance</b>: it closes the
+economic model at a different place (§2.1) by deriving preferences from the same inferential machinery that governs
+perception and action, rather than positing them. That closure is the point — it turns "where do the shifting
+preferences come from?" from an assumption into a mechanism. What the model does <em>not</em> establish must be
+equally clear: it is not calibrated, fits no data, and forecasts nothing; its parameters are illustrative and its
+numbers hold for the stated seeds. It is a demonstration of <em>conceptual sufficiency</em> and a generator of
+qualitative hypotheses, not a validated account of any actual market. Its value is to show that a specific, plausible
+cognitive assumption is <em>enough</em> to reproduce a family of macro-financial regularities — and to make the
+assumptions, and their consequences, fully explicit and manipulable. Section 12 details the boundaries of these
+claims.</p>
+
+<h2 id="s12"><span class="n">12</span>Limitations &amp; scope of claims</h2>
 <ul>
   <li><b>What the agents are.</b> Discrete POMDP agents performing one-step Bayesian belief updates and
      preference-weighted action selection. "Cognition" here denotes exactly that machinery — not biological,
@@ -475,20 +584,29 @@ browser thread, so the model runs in real time.</p>
      macro-financial model.</li>
 </ul>
 
-<h2 id="s12"><span class="n">12</span>Reproducibility</h2>
+<h2 id="s13"><span class="n">13</span>Reproducibility</h2>
 <p>The entire model and interface are a single self-contained HTML file with no external dependencies; the simulation
 runs client-side. Randomness is a seeded mulberry32 generator: one stream for market noise and initial heterogeneity,
 per-agent streams for the single-asset variant's stochastic action selection. A given (seed, parameters) pair therefore
 reproduces bit-for-bit. Results above use a fixed warm-up of 200 steps and the seed set stated in §10. All matrices,
 thresholds and defaults are given in Sections 4–9; nothing further is required to reconstruct the model.</p>
 
-<h2 id="s13"><span class="n">13</span>References</h2>
+<h2 id="s14"><span class="n">14</span>References</h2>
 <ol class="refs">
   <li>Guénin-Carlut, A., &amp; Benazouz, S. (2024). <i>Modelling the social construction of preferences in financial
       economics — Toward an Active Inference reconstruction of Minskyian macroeconomics.</i> OSF.
       <a href="https://osf.io/rfsv7/">https://osf.io/rfsv7/</a></li>
   <li>Minsky, H. P. (1982). <i>The Financial-Instability Hypothesis: Capitalist Processes and the Behavior of the
       Economy.</i></li>
+  <li>Chavalarias, D. (2009). <i>Désir mimétique et imitation rationnelle : vers un individualisme méthodologique
+      complexe.</i></li>
+  <li>Felin, T., Kauffman, S., Koppl, R., &amp; Longo, G. (2014). Economic opportunity and evolution: beyond landscapes
+      and bounded rationality. <i>Strategic Entrepreneurship Journal</i>, 8(4), 269–282.
+      <a href="https://doi.org/10.1002/sej.1184">https://doi.org/10.1002/sej.1184</a></li>
+  <li>Hohwy, J. (2016). The self-evidencing brain. <i>Noûs</i>, 50(2), 259–285.
+      <a href="https://doi.org/10.1111/nous.12062">https://doi.org/10.1111/nous.12062</a></li>
+  <li>Nikolaidi, M. (2017). Three decades of modelling Minsky: what we have learned and the way forward.
+      <i>European Journal of Economics and Economic Policies</i>, 14(2), 222–237.</li>
   <li>Friston, K., Daunizeau, J., Kilner, J., &amp; Kiebel, S. J. (2010). Action and behavior: a free-energy
       formulation. <i>Biological Cybernetics</i>, 102(3), 227–260.
       <a href="https://doi.org/10.1007/s00422-010-0364-z">https://doi.org/10.1007/s00422-010-0364-z</a></li>
