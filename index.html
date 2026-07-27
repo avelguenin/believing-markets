@@ -98,7 +98,7 @@
   .appbody{display:grid; grid-template-columns:290px 1fr}
   @media(max-width:900px){ .appbody{display:flex; flex-direction:column} .appbody .content{order:1} .appbody .side{order:2} }
   .side{border-right:1px solid var(--border); background:var(--bg2); padding:14px; max-height:1400px; overflow-y:auto}
-  @media(max-width:900px){ .side{border-right:none; border-top:1px solid var(--border); max-height:none} }
+  @media(max-width:900px){ .side{border-right:none; border-top:1px solid var(--border); max-height:none; overflow:visible} }
   .sidehdr{display:none}
   @media(max-width:900px){ .sidehdr{display:block; font-weight:680; font-size:13px; color:var(--ink); margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border)} }
   .presets{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px}
@@ -123,7 +123,7 @@
   .seedrow{display:flex; align-items:center; gap:8px; margin-top:12px}
   .seedrow input{width:80px; background:var(--panel); border:1px solid var(--border2); color:var(--ink); padding:6px 8px; border-radius:7px; font-size:12px}
   .content{padding:14px 16px; overflow-y:auto; max-height:1400px}
-  @media(max-width:900px){ .content{max-height:none} }
+  @media(max-width:900px){ .content{max-height:none; overflow:visible} }
   .tiles{display:grid; grid-template-columns:repeat(5,1fr); gap:9px; margin-bottom:13px}
   @media(max-width:1000px){ .tiles{grid-template-columns:repeat(3,1fr)} }
   .tile{background:var(--panel2); border:1px solid var(--border); border-radius:11px; padding:9px 11px}
@@ -331,8 +331,8 @@
         <div class="presets" id="presets"></div>
         <div id="controls"></div>
         <div class="ct">
-          <div class="r"><label>Simulation speed</label><span class="v" id="v_speed">2×</span></div>
-          <input type="range" id="speed" min="1" max="24" step="1" value="2">
+          <div class="r"><label>Simulation speed</label><span class="v" id="v_speed">4×</span></div>
+          <input type="range" id="speed" min="1" max="24" step="1" value="4">
         </div>
         <div class="seedrow">
           <label style="font-size:12px">Seed</label>
@@ -704,7 +704,9 @@ const PRESETS={
 };
 
 /* ---------------- state ---------------- */
-let cfg={}, sim=null, running=false, stepsPerFrame=2;
+let cfg={}, sim=null, running=false, speedDial=4, frameAcc=0;
+// actual model steps per animation frame = speedDial / 4, so the "4×" default runs
+// at one step per frame; a fractional accumulator handles rates below 1 step/frame.
 const WINDOW=460;
 const DEFAULTS=Object.assign({}, M.createModel({}).cfg);
 
@@ -900,14 +902,17 @@ function render(){ drawCapital(); drawPrice(); drawBelief(); drawFin(); tiles();
  const dot=document.getElementById('phaseDot'); dot.style.background=ph.c; dot.style.boxShadow='0 0 8px '+ph.c;
  document.getElementById('phaseBadge').style.borderColor=ph.c+'88';
 }
-function frame(){ if(running){ for(let i=0;i<stepsPerFrame;i++) M.step(sim); render(); } requestAnimationFrame(frame); }
+function frame(){
+ if(running){ frameAcc += speedDial/4; while(frameAcc>=1){ M.step(sim); frameAcc--; } render(); }
+ requestAnimationFrame(frame);
+}
 
 /* ---------------- transport ---------------- */
 document.getElementById('btnPlay').onclick=function(){ running=!running; this.textContent=running?'❚❚ Pause':'▶ Run'; this.classList.toggle('primary',!running); };
 document.getElementById('btnStep').onclick=()=>{ M.step(sim); render(); };
 document.getElementById('btnReset').onclick=()=>rebuild();
 document.getElementById('btnSeed').onclick=()=>rebuild();
-document.getElementById('speed').addEventListener('input',function(){ stepsPerFrame=parseInt(this.value,10); document.getElementById('v_speed').textContent=stepsPerFrame+'×'; });
+document.getElementById('speed').addEventListener('input',function(){ speedDial=parseInt(this.value,10); document.getElementById('v_speed').textContent=speedDial+'×'; });
 
 /* ---------------- about drawer ---------------- */
 const DOCS={
