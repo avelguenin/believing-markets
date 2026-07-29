@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A market of believing agents · Active Inference × Minsky</title>
+<meta name="description" content="An interactive Active-Inference reconstruction of Minskyian macroeconomics: boom, bust, and the displacement of capital between domains, from the socially-constructed belief in appreciation.">
+<style>
+  :root{
+    --bg:#f4ecdd; --bg2:#efe5d1; --panel:#fdfبf3; --panel:#fdfaf3; --panel2:#f7f0e2;
+    --border:#e6dcc7; --border2:#dccdb0;
+    --ink:#41382c; --ink2:#5d5343; --muted:#8d7e67; --faint:#b1a488;
+    --terra:#c1714a; --sage:#8a9b57; --gold:#cc9a3c; --blue:#6d8fb0; --plum:#a4738a;
+    --d0:#c1714a; --d1:#8a9b57; --d2:#6d8fb0; --d3:#c9a03c; --d4:#a4738a;
+    --cash:#cabd9f;
+    --hedge:#8a9b57; --spec:#cc9a3c; --ponzi:#bf5a44; --crisis:#9e3d2f;
+    --bull:#8a9b57; --neutral:#b1a488; --bear:#bf5a44;
+    --shadow:0 4px 18px rgba(120,96,58,.13); --shadowS:0 2px 8px rgba(120,96,58,.10);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:15px; line-height:1.66; -webkit-font-smoothing:antialiased;}
+  a{color:var(--terra); text-decoration:none} a:hover{text-decoration:underline}
+  h1,h2,h3{font-weight:680; letter-spacing:-.01em; color:var(--ink); line-height:1.2}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 22px}
+
+  /* ---- top nav ---- */
+  nav{position:sticky; top:0; z-index:30; background:rgba(244,236,221,.86); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border); }
+  nav .wrap{display:flex; align-items:center; gap:20px; height:56px}
+  nav .logo{font-weight:720; font-size:15px; color:var(--ink); display:flex; align-items:center; gap:9px}
+  nav .logo .mk{width:11px;height:11px;border-radius:50%;background:var(--terra); box-shadow:0 0 0 4px rgba(193,113,74,.18)}
+  nav .links{margin-left:auto; display:flex; gap:22px; font-size:13.5px}
+  nav .links a{color:var(--muted); font-weight:550} nav .links a:hover{color:var(--terra); text-decoration:none}
+  @media(max-width:720px){ nav .links a.hideS{display:none} }
+
+  /* ---- hero ---- */
+  .hero{padding:74px 0 54px; text-align:center; position:relative; overflow:hidden}
+  .hero:before{content:""; position:absolute; inset:0;
+    background:radial-gradient(680px 340px at 50% -12%, #fbf2df 0%, rgba(251,242,223,0) 70%); pointer-events:none}
+  .hero .eyebrow{color:var(--terra); font-weight:640; font-size:13px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:16px}
+  .hero h1{font-size:clamp(30px,5.4vw,50px); margin:0 0 18px; line-height:1.08}
+  .hero h1 .u{color:var(--terra)}
+  .hero p.lede{font-size:clamp(16px,2.3vw,19px); color:var(--ink2); max-width:660px; margin:0 auto 30px}
+  .cta{display:inline-flex; gap:12px; flex-wrap:wrap; justify-content:center}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:12px; font-weight:620; font-size:14.5px;
+    cursor:pointer; border:1px solid transparent; transition:.16s; text-decoration:none}
+  .btn.primary{background:linear-gradient(180deg,#c9794f,#b5623c); color:#fff6ee; box-shadow:0 6px 18px rgba(181,98,60,.28)}
+  .btn.primary:hover{filter:brightness(1.05); transform:translateY(-1px); text-decoration:none}
+  .btn.soft{background:var(--panel); color:var(--ink); border-color:var(--border2); box-shadow:var(--shadowS)}
+  .btn.soft:hover{border-color:var(--terra); color:var(--terra); text-decoration:none}
+  .hero .byline{margin-top:26px; font-size:13px; color:var(--muted)}
+
+  /* ---- sections ---- */
+  section.band{padding:52px 0; border-top:1px solid var(--border)}
+  section.band.alt{background:var(--bg2)}
+  .kicker{color:var(--terra); font-weight:640; font-size:12.5px; letter-spacing:.13em; text-transform:uppercase; margin-bottom:10px}
+  section h2{font-size:clamp(23px,3.4vw,31px); margin:0 0 14px}
+  .lead{font-size:17px; color:var(--ink2); max-width:720px}
+  .prose{max-width:720px}
+  .prose p{margin:14px 0; color:var(--ink2)}
+  .prose strong{color:var(--ink)}
+  .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:26px}
+  @media(max-width:820px){ .cards{grid-template-columns:1fr} }
+  .card{background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:20px 20px; box-shadow:var(--shadowS)}
+  .card .ic{width:38px;height:38px;border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:19px; margin-bottom:12px}
+  .card h3{font-size:16.5px; margin:0 0 6px}
+  .card p{font-size:14px; color:var(--muted); margin:0}
+  .result{display:grid; grid-template-columns:150px 1fr; gap:18px; padding:20px 0; border-top:1px dashed var(--border2)}
+  .result:first-of-type{border-top:none}
+  .result .big{font-size:30px; font-weight:720; color:var(--terra); line-height:1.05}
+  .result .big small{display:block; font-size:12px; font-weight:600; color:var(--muted); letter-spacing:.04em; margin-top:4px; text-transform:uppercase}
+  .result .txt{font-size:14.5px; color:var(--ink2)}
+  .result .txt b{color:var(--ink)}
+  @media(max-width:640px){ .result{grid-template-columns:1fr; gap:4px} }
+  .pill{display:inline-block; font-size:11px; font-weight:600; padding:2px 9px; border-radius:20px; background:#f0e7d4; color:var(--terra); border:1px solid var(--border2); margin-right:6px}
+  .steps{counter-reset:s; max-width:760px; margin-top:12px}
+  .steps li{list-style:none; position:relative; padding:12px 0 12px 46px; border-top:1px solid var(--border)}
+  .steps li:before{counter-increment:s; content:counter(s); position:absolute; left:0; top:12px; width:30px;height:30px;border-radius:50%;
+    background:var(--terra); color:#fff; font-weight:680; font-size:14px; display:flex; align-items:center; justify-content:center}
+  .steps li b{color:var(--ink)}
+  code.k{background:#efe6d2; border:1px solid var(--border2); border-radius:5px; padding:1px 6px; font-size:13px; font-family:"SF Mono",ui-monospace,Menlo,monospace; color:#8a5c3c}
+
+  /* ==================== THE TOOL ==================== */
+  #app{scroll-margin-top:60px}
+  .appshell{background:var(--panel); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); overflow:hidden; margin-top:22px}
+  .apphead{display:flex; align-items:center; gap:14px; padding:14px 18px; border-bottom:1px solid var(--border); background:var(--panel2); flex-wrap:wrap}
+  .apphead .ttl{font-weight:680; font-size:15px}
+  .phase{display:flex; align-items:center; gap:8px; padding:5px 12px; border-radius:20px; border:1px solid var(--border2); background:var(--panel); font-weight:620; font-size:12.5px}
+  .phase .dot{width:9px;height:9px;border-radius:50%;background:var(--muted); transition:.4s}
+  .apphead .sp{flex:1}
+  .tbtn{background:var(--panel); border:1px solid var(--border2); color:var(--ink); padding:7px 13px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:580; transition:.15s}
+  .tbtn:hover{border-color:var(--terra); color:var(--terra)}
+  .tbtn.primary{background:linear-gradient(180deg,#c9794f,#b5623c); color:#fff6ee; border-color:#b5623c}
+  .tbtn.primary:hover{filter:brightness(1.05); color:#fff6ee}
+  .appbody{display:grid; grid-template-columns:290px 1fr}
+  @media(max-width:900px){ .appbody{display:flex; flex-direction:column} .appbody .content{order:1} .appbody .side{order:2} }
+  .side{border-right:1px solid var(--border); background:var(--bg2); padding:14px; max-height:1400px; overflow-y:auto}
+  @media(max-width:900px){ .side{border-right:none; border-top:1px solid var(--border); max-height:none; overflow:visible} }
+  .sidehdr{display:none}
+  @media(max-width:900px){ .sidehdr{display:block; font-weight:680; font-size:13px; color:var(--ink); margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border)} }
+  .presets{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px}
+  .pset{font-size:11.5px; padding:6px 10px; border-radius:8px; background:var(--panel); border:1px solid var(--border); color:var(--ink); cursor:pointer; transition:.15s}
+  .pset:hover{border-color:var(--terra); color:var(--terra)}
+  .grp{margin-bottom:13px; border:1px solid var(--border); border-radius:12px; overflow:hidden; background:var(--panel)}
+  .grp .gh{display:flex; align-items:center; gap:8px; padding:9px 12px; cursor:pointer; font-weight:620; font-size:12.5px; background:var(--panel2)}
+  .grp .gh .gi{width:8px;height:8px;border-radius:3px}
+  .grp .gh .cv{margin-left:auto; color:var(--faint); transition:.2s}
+  .grp.col .cv{transform:rotate(-90deg)} .grp.col .gb{display:none}
+  .gb{padding:4px 12px 12px}
+  .ct{margin-top:11px}
+  .ct .r{display:flex; justify-content:space-between; align-items:baseline}
+  .ct label{font-size:12.5px; font-weight:550; display:flex; align-items:center; gap:5px}
+  .ct .v{font-variant-numeric:tabular-nums; font-size:12.5px; color:var(--terra); font-weight:680}
+  .ct .h{font-size:10.5px; color:var(--faint); margin-top:2px; line-height:1.4}
+  input[type=range]{-webkit-appearance:none; width:100%; height:4px; border-radius:3px; margin:8px 0 2px;
+    background:linear-gradient(90deg,var(--terra) var(--pct,0%), #e2d6bf var(--pct,0%)); outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:15px;height:15px;border-radius:50%; background:#fff; border:2px solid var(--terra); cursor:pointer; box-shadow:0 1px 3px rgba(120,90,50,.4)}
+  input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid var(--terra);cursor:pointer}
+  .inf{cursor:help; color:var(--faint); border:1px solid var(--faint); border-radius:50%; width:14px;height:14px; display:inline-flex; align-items:center; justify-content:center; font-size:9px}
+  .seedrow{display:flex; align-items:center; gap:8px; margin-top:12px}
+  .seedrow input{width:80px; background:var(--panel); border:1px solid var(--border2); color:var(--ink); padding:6px 8px; border-radius:7px; font-size:12px}
+  .content{padding:14px 16px; overflow-y:auto; max-height:1400px}
+  @media(max-width:900px){ .content{max-height:none; overflow:visible} }
+  .tiles{display:grid; grid-template-columns:repeat(5,1fr); gap:9px; margin-bottom:13px}
+  @media(max-width:1000px){ .tiles{grid-template-columns:repeat(3,1fr)} }
+  .tile{background:var(--panel2); border:1px solid var(--border); border-radius:11px; padding:9px 11px}
+  .tile .k{font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.4px}
+  .tile .val{font-size:18px; font-weight:700; font-variant-numeric:tabular-nums; margin-top:2px}
+  .tile .s{font-size:10px; color:var(--faint)}
+  .chart{background:var(--panel); border:1px solid var(--border); border-radius:13px; padding:12px 13px 8px; margin-bottom:12px; box-shadow:var(--shadowS)}
+  .chart h4{margin:0 0 2px; font-size:13px; display:flex; align-items:center; gap:8px}
+  .chart .cn{font-size:10.5px; color:var(--faint); margin:0 0 6px}
+  .leg{display:flex; flex-wrap:wrap; gap:11px; margin-left:auto; font-size:10.5px; color:var(--muted); font-weight:520}
+  .leg span{display:inline-flex; align-items:center; gap:5px}
+  .leg i{width:10px;height:3px;border-radius:2px} .leg i.sq{width:9px;height:9px;border-radius:2px}
+  canvas{display:block; width:100%; border-radius:6px}
+  .domrow{display:flex; gap:14px; flex-wrap:wrap; padding:2px 0 8px}
+  .dom{flex:1; min-width:120px}
+  .dom .dl{display:flex; justify-content:space-between; font-size:11px; margin-bottom:3px}
+  .dtrack{height:9px; border-radius:5px; background:#eadfc9; overflow:hidden}
+  .dfill{height:100%; width:0%; border-radius:5px; transition:width .25s}
+  .foot{padding:14px 18px; border-top:1px solid var(--border); background:var(--panel2); font-size:11.5px; color:var(--muted); display:flex; gap:16px; flex-wrap:wrap}
+
+  footer.site{padding:40px 0; border-top:1px solid var(--border); color:var(--muted); font-size:13.5px; background:var(--bg2)}
+  footer.site .wrap{display:flex; gap:20px; flex-wrap:wrap; align-items:center}
+  footer.site a{color:var(--terra)}
+
+  /* about drawer inside tool */
+  .drawerBg{position:fixed; inset:0; background:rgba(60,45,25,.34); backdrop-filter:blur(2px); opacity:0; pointer-events:none; transition:.25s; z-index:50}
+  .drawerBg.on{opacity:1; pointer-events:auto}
+  .drawer{position:fixed; top:0; right:0; height:100%; width:min(620px,94vw); background:var(--panel); border-left:1px solid var(--border2);
+    box-shadow:-8px 0 30px rgba(90,70,40,.18); transform:translateX(103%); transition:transform .3s cubic-bezier(.4,0,.2,1); z-index:51; display:flex; flex-direction:column}
+  .drawer.on{transform:none}
+  .drawer .dh{display:flex; align-items:center; padding:14px 18px; border-bottom:1px solid var(--border); font-weight:680}
+  .drawer .dx{margin-left:auto; cursor:pointer; color:var(--muted); font-size:18px; padding:2px 8px; border-radius:7px}
+  .drawer .dx:hover{background:var(--panel2)}
+  .dtabs{display:flex; gap:2px; padding:8px 14px 0; border-bottom:1px solid var(--border); flex-wrap:wrap}
+  .dtab{padding:8px 11px; font-size:12.5px; cursor:pointer; color:var(--muted); border-bottom:2px solid transparent; font-weight:560}
+  .dtab.on{color:var(--terra); border-color:var(--terra)}
+  .dbody{overflow-y:auto; padding:18px 22px 50px}
+  .dbody h3{font-size:14px; color:var(--terra); margin:18px 0 6px}
+  .dbody p{font-size:13.5px; color:var(--ink2); margin:8px 0}
+  .dbody .eq{background:#efe6d2; border:1px solid var(--border2); border-radius:8px; padding:9px 12px; font-family:"SF Mono",ui-monospace,Menlo,monospace; font-size:12px; color:#795334; margin:9px 0; overflow-x:auto}
+  .dbody ul{padding-left:18px; font-size:13.5px; color:var(--ink2)} .dbody li{margin:5px 0}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <div class="logo"><span class="mk"></span>Believing Markets</div>
+  <div class="links">
+    <a href="#why" class="hideS">Motivation</a>
+    <a href="#model" class="hideS">The model</a>
+    <a href="#results" class="hideS">Results</a>
+    <a href="whitepaper.html" class="hideS">Whitepaper</a>
+    <a href="#app">Try it ↓</a>
+  </div>
+</div></nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">Active Inference × Minskyian macroeconomics</div>
+  <h1>A market of <span class="u">believing</span> agents</h1>
+  <p class="lede">Boom, bust, and the restless <strong>displacement of capital between domains</strong> —
+     all emerging, from the ground up, out of what a crowd of cognitive agents comes to <em>believe</em> about the future.</p>
+  <div class="cta">
+    <a class="btn primary" href="#app">▶ Launch the interactive model</a>
+    <a class="btn soft" href="#why">Read the idea first</a>
+  </div>
+  <div class="byline">An interactive realisation of Guénin-Carlut &amp; Benazouz (2024), implemented by Claude (Anthropic) · runs entirely in your browser</div>
+</div></header>
+
+<!-- ============ MOTIVATION ============ -->
+<section class="band" id="why"><div class="wrap">
+  <div class="kicker">Why build this</div>
+  <h2>Where do a market's preferences come from?</h2>
+  <div class="prose">
+    <p>Mainstream economics models markets with <strong>game theory</strong>: agents with fixed preferences,
+       optimising against one another inside a fixed set of rules. It is powerful — but it quietly
+       <em>assumes</em> the very things a financial crisis is made of. It takes as given what people want,
+       how much risk they will stomach, and how confident they feel. Those are exactly the things that
+       <strong>shift</strong> as a boom builds.</p>
+    <p>The economist <strong>Hyman Minsky</strong> put this shifting at the centre of his
+       <em>Financial Instability Hypothesis</em>: a long stretch of calm quietly convinces everyone that
+       risk has gone away. Caution erodes, borrowing climbs, speculation spreads — until the market is a
+       hair-trigger away from collapse. In his phrase, <strong>stability is destabilising</strong>. Minsky
+       distrusted the tidy equations of game theory, so he left the idea vivid but mathematically loose.</p>
+    <p>This project takes a different foundation for the agents: <strong>Active Inference</strong>, a theory
+       from cognitive science in which a mind is a prediction machine. It continually anticipates what it
+       will sense, and — crucially — <em>acts to make its predictions come true</em>. Preferences are not
+       fixed dials; they are downstream of what the agent has come to <strong>believe</strong>. Put a crowd
+       of such agents in a market and you get preferences that are <strong>constructed</strong> — by
+       experience, and by each other.</p>
+    <p>The wager of the model is simple: if you let belief do the work Minsky described, do
+       <strong>boom-and-bust cycles appear on their own?</strong> They do. And with several markets to choose
+       from, something extra appears — <strong>excess capital sloshing from one domain to the next</strong>,
+       chasing the next story.</p>
+  </div>
+</div></section>
+
+<!-- ============ THE MODEL ============ -->
+<section class="band alt" id="model"><div class="wrap">
+  <div class="kicker">The model, plainly</div>
+  <h2>One idea, four moving parts</h2>
+  <p class="lead">Every trader is a small Active-Inference agent. It watches prices, infers whether each
+     market is quietly appreciating, and places its capital accordingly — borrowing when it feels sure.
+     Four design choices turn that into a Minsky world.</p>
+  <div class="cards">
+    <div class="card">
+      <div class="ic" style="background:#f3e3d8;color:var(--terra)">✦</div>
+      <h3>Belief in appreciation is the driver</h3>
+      <p>An agent's willingness to take on debt falls as its confidence that prices will keep rising grows.
+         The engine of the boom is a belief the crowd talks itself into — and then confirms by buying.</p>
+    </div>
+    <div class="card">
+      <div class="ic" style="background:#e9efd9;color:var(--sage)">◐</div>
+      <h3>A memory of losses</h3>
+      <p>Caution is not just belief. A path-dependent memory of losses — quick to spike, slow to fade — shades
+         every agent's nerve, so fear lingers after a crash and confidence has to be rebuilt slowly.</p>
+    </div>
+    <div class="card">
+      <div class="ic" style="background:#e3ecf2;color:var(--blue)">⇄</div>
+      <h3>Capital rotates between domains</h3>
+      <p>With several markets, agents pour capital into whichever domain looks best. When its story sours,
+         the money doesn't vanish — it <strong>displaces</strong> into the next promising domain.</p>
+    </div>
+    <div class="card">
+      <div class="ic" style="background:#f3e6d5;color:var(--gold)">⚖</div>
+      <h3>Lopsided arbitrage</h3>
+      <p>Bargain-hunters reliably buy a cheap asset (ending busts), but short-selling limits mean nobody
+         firmly caps an expensive one — so bubbles are free to inflate. This asymmetry keeps cycles alive.</p>
+    </div>
+    <div class="card">
+      <div class="ic" style="background:#f3e3d8;color:var(--terra)">⌗</div>
+      <h3>Minsky's ladder of fragility</h3>
+      <p>Each agent is classed <strong>hedge</strong> (income covers its debts), <strong>speculative</strong>
+         (covers only interest) or <strong>Ponzi</strong> (solvent only if prices keep rising) — the rungs
+         Minsky described, here measured live.</p>
+    </div>
+    <div class="card">
+      <div class="ic" style="background:#e9efd9;color:var(--sage)">◇</div>
+      <h3>No two agents alike</h3>
+      <p>Traders differ in nerve, patience and perception, so the crowd never moves in perfect lockstep —
+         you get overlapping waves rather than one grand boom and a long silence.</p>
+    </div>
+  </div>
+  <p class="prose" style="margin-top:24px; font-size:13.5px; color:var(--muted)">
+     Under the hood each agent is a discrete Active-Inference (POMDP) agent — inferring a hidden market
+     regime, scoring where to put its capital by Expected Free Energy, and self-evidencing its own beliefs.
+     You never need to read any of that: in the tool below, every one of these ideas is a labelled slider,
+     and the “How it works” panel spells out the mathematics for the curious.</p>
+</div></section>
+
+<!-- ============ RESULTS ============ -->
+<section class="band" id="results"><div class="wrap">
+  <div class="kicker">What the model shows</div>
+  <h2>Four results you can reproduce below</h2>
+  <div style="max-width:820px; margin-top:22px">
+    <div class="result">
+      <div class="big">70–95%<small>capital concentration</small></div>
+      <div class="txt"><b>Capital displaces between domains.</b> With several markets, excess capital piles into
+        one domain, then rotates to the next as beliefs shift — a visible, restless migration. The money never
+        rests: watch the coloured bands trade places in the tool below. <span class="pill">the headline result</span></div>
+    </div>
+    <div class="result">
+      <div class="big">+2 steps<small>belief leads money</small></div>
+      <div class="txt"><b>Belief leads the money.</b> The crowd's belief in appreciation rises <em>before</em>
+        aggregate leverage does — cross-correlation peaks at a positive lag (~2 steps, correlation ≈ 0.5).
+        Confidence is the cause, not a coincident readout. The blue line moves first; the money follows.</div>
+    </div>
+    <div class="result">
+      <div class="big">1.5× → 1.1×<small>peak bubble vs #domains</small></div>
+      <div class="txt"><b>More domains, smaller bubbles.</b> With a single market, prices spike to about 1.5×
+        fundamental; give capital several places to flee and the peak falls toward 1.1×. Because excess money
+        can always rotate elsewhere, the multi-domain structure acts as a <em>pressure valve</em> that damps
+        any one bubble — a genuinely emergent effect.</div>
+    </div>
+    <div class="result">
+      <div class="big">a dial<small>not a law of nature</small></div>
+      <div class="txt"><b>The crash is a setting.</b> Turn up the crowd's aversion to debt (“Cautious crowd”) and
+        average leverage falls from ~1.2× toward ~0.9× — the market calms. Turn it down (“Euphoria”) and
+        borrowing climbs. Fragility isn't fixed; it responds to how the agents are disposed — Minsky's point,
+        made into a lever you can pull.</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ THE TOOL ============ -->
+<section class="band alt" id="app"><div class="wrap">
+  <div class="kicker">Try it</div>
+  <h2>The interactive market</h2>
+  <p class="lead">It's already running below. Press pause, drag any slider, add or remove domains, and watch
+     the crowd's mood, the flow of capital, and the ladder of fragility respond. Nothing to install.</p>
+
+  <div class="appshell">
+    <div class="apphead">
+      <span class="ttl">Believing Markets — live simulation</span>
+      <span class="phase" id="phaseBadge"><span class="dot" id="phaseDot"></span><span id="phaseTxt">starting…</span></span>
+      <span class="sp"></span>
+      <button class="tbtn" id="btnStep">Step</button>
+      <button class="tbtn primary" id="btnPlay">▶ Run</button>
+      <button class="tbtn" id="btnReset">↺ Reset</button>
+      <button class="tbtn" id="btnAbout">✦ How it works</button>
+    </div>
+    <div class="appbody">
+      <aside class="side">
+        <div class="sidehdr">Controls &amp; presets — tap a group to open</div>
+        <div class="presets" id="presets"></div>
+        <div id="controls"></div>
+        <div class="ct">
+          <div class="r"><label>Simulation speed</label><span class="v" id="v_speed">4×</span></div>
+          <input type="range" id="speed" min="1" max="24" step="1" value="4">
+        </div>
+        <div class="seedrow">
+          <label style="font-size:12px">Seed</label>
+          <input type="number" id="seed" value="5">
+          <button class="tbtn" id="btnSeed" style="padding:6px 10px">apply</button>
+        </div>
+      </aside>
+      <div class="content">
+        <div class="tiles" id="tiles"></div>
+
+        <div class="chart">
+          <h4>Displacement of capital between domains
+            <span class="leg" id="legCap"></span></h4>
+          <p class="cn">Share of all invested capital sitting in each domain (plus idle cash). Watch the bands
+             swell and shrink as money migrates from a souring domain to a rising one.</p>
+          <canvas id="cCapital" height="185"></canvas>
+        </div>
+
+        <div class="chart">
+          <h4>Domain prices &amp; fundamental
+            <span class="leg" id="legPrice"></span></h4>
+          <p class="cn">Each domain's asset price. The dashed line is fundamental value; excursions above it are
+             belief-fuelled bubbles.</p>
+          <canvas id="cPrice" height="190"></canvas>
+        </div>
+
+        <div class="chart">
+          <h4>Belief &amp; leverage
+            <span class="leg">
+              <span><i style="background:var(--blue)"></i>mean belief in appreciation</span>
+              <span><i style="background:var(--terra)"></i>aggregate leverage</span>
+            </span></h4>
+          <p class="cn">The crowd's average optimism across domains, and how much it has borrowed. Belief leads.</p>
+          <canvas id="cBelief" height="150"></canvas>
+        </div>
+
+        <div class="chart">
+          <h4>Ladder of fragility &amp; insolvencies
+            <span class="leg">
+              <span><i class="sq" style="background:var(--hedge)"></i>hedge</span>
+              <span><i class="sq" style="background:var(--spec)"></i>speculative</span>
+              <span><i class="sq" style="background:var(--ponzi)"></i>Ponzi</span>
+              <span><i class="sq" style="background:var(--crisis)"></i>bankruptcies</span>
+            </span></h4>
+          <p class="cn">Minsky's financing classes across the population, with insolvency spikes.</p>
+          <canvas id="cFin" height="150"></canvas>
+        </div>
+
+        <div class="chart" style="margin-bottom:4px">
+          <h4>Capital allocation right now</h4>
+          <p class="cn">Live share of invested capital in each domain.</p>
+          <div class="domrow" id="domrow"></div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <span>Every agent is a discrete Active-Inference agent (a POMDP): belief updating and preference-weighted action, not a fitted curve.</span>
+      <span>Not investment advice.</span>
+    </div>
+  </div>
+</div></section>
+
+<footer class="site"><div class="wrap">
+  <div style="max-width:640px">
+    <b style="color:var(--ink)">Reference.</b> Guénin-Carlut, A., &amp; Benazouz, S. (2024). <i>Modelling the social
+    construction of preferences in financial economics — Toward an Active Inference reconstruction of Minskyian
+    macroeconomics.</i> OSF. <a href="https://osf.io/rfsv7/" target="_blank" rel="noopener">https://osf.io/rfsv7/</a><br>
+    Model, interface and <a href="whitepaper.html">technical whitepaper</a> implemented by Claude (Anthropic).
+    A research and teaching model; not investment advice.
+  </div>
+  <div style="margin-left:auto">A cognitive reconstruction of Minskyian macroeconomics.</div>
+</div></footer>
+
+<!-- about drawer -->
+<div class="drawerBg" id="drawerBg"></div>
+<div class="drawer" id="drawer">
+  <div class="dh">How it works &amp; why these choices<span class="dx" id="closeDrawer">✕</span></div>
+  <div class="dtabs" id="dtabs"></div>
+  <div class="dbody" id="dbody"></div>
+</div>
+
+<script>
+%%ENGINE%%
+</script>
+<script>
+%%UI%%
+</script>
+</body>
+</html>
